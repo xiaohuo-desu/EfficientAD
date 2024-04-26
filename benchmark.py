@@ -17,7 +17,7 @@ def get_pdn(out=384):
         nn.Conv2d(out, out, 1)
     )
 
-def get_ae():
+"""def get_ae():
     return nn.Sequential(
         # encoder
         nn.Conv2d(3, 32, 4, 2, 1), nn.ReLU(inplace=True),
@@ -42,21 +42,21 @@ def get_ae():
         nn.Upsample(56, mode='bilinear'),
         nn.Conv2d(64, 64, 3, 1, 1), nn.ReLU(inplace=True),
         nn.Conv2d(64, 384, 3, 1, 1)
-    )
+    )"""
 
 
 gpu = torch.cuda.is_available()
 
-autoencoder = get_ae()
+"""autoencoder = get_ae()"""
 teacher = get_pdn(384)
 student = get_pdn(768)
 
-autoencoder = autoencoder.eval()
+"""autoencoder = autoencoder.eval()"""
 teacher = teacher.eval()
 student = student.eval()
 
 if gpu:
-    autoencoder.half().cuda()
+    """autoencoder.half().cuda()"""
     teacher.half().cuda()
     student.half().cuda()
 
@@ -74,11 +74,11 @@ with torch.no_grad():
         s = student(image)
 
         st_map = torch.mean((t - s[:, :384]) ** 2, dim=1)
-        ae = autoencoder(image)
-        ae_map = torch.mean((ae - s[:, 384:]) ** 2, dim=1)
+        """ae = autoencoder(image)
+        ae_map = torch.mean((ae - s[:, 384:]) ** 2, dim=1)"""
         st_map = st_map * quant_mult + quant_add
-        ae_map = ae_map * quant_mult + quant_add
-        result_map = st_map + ae_map
+        """ae_map = ae_map * quant_mult + quant_add"""
+        result_map = st_map# + ae_map
         result_on_cpu = result_map.cpu().numpy()
         timed = time() - start
         times.append(timed)
