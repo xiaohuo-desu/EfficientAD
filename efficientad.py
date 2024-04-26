@@ -194,10 +194,10 @@ def main():
             teacher_output_ae = teacher(image_ae)
             teacher_output_ae = (teacher_output_ae - teacher_mean) / teacher_std
         student_output_ae = student(image_ae)[:, out_channels:]
-
-        distance_ae = (teacher_output_ae - ae_output)**2
+        #TODO: Figure out what the effect between AE(Student-Teacher) and STAE(Student-Autoencoder)
+        #distance_ae = (teacher_output_ae - ae_output)**2
         distance_stae = (ae_output - student_output_ae)**2
-        loss_ae = torch.mean(distance_ae)
+        #loss_ae = torch.mean(distance_ae)
         loss_stae = torch.mean(distance_stae)
         """
         #loss_total = loss_st + loss_ae + loss_stae
@@ -397,6 +397,7 @@ def predict(image, teacher, student, teacher_mean, teacher_std,
     map_st = torch.mean((teacher_output - student_output[:, :out_channels])**2,
                         dim=1, keepdim=True)
     if q_st_start is not None:
+        # 0.1? improvement exists?
         map_st = 0.1 * (map_st - q_st_start) / (q_st_end - q_st_start)
     return map_st 
 
